@@ -14,6 +14,7 @@ import (
 	"github.com/Zubimendi/sync-loop/api/internal/middleware" // our package
 	"github.com/Zubimendi/sync-loop/api/internal/repo"
 	"github.com/Zubimendi/sync-loop/api/internal/connector"
+	"github.com/rs/cors"
 
 )
 
@@ -37,14 +38,25 @@ func main() {
 	connSvc  := connector.NewService(connRepo)
 	connH    := connector.NewHandler(connSvc)
 
+	c := cors.New(cors.Options{
+	AllowedOrigins:   []string{"http://localhost:3000"},
+	AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+	AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+	ExposedHeaders:   []string{"Link"},
+	AllowCredentials: true,
+	MaxAge:           300,
+})
+	
 	r := chi.NewRouter()
 	r.Use(chiMiddleware.Logger)
 	r.Use(chiMiddleware.Recoverer)
+	r.Use(c.Handler)
 	authMw := middleware.Auth(authSvc)
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Post("/register", authH.Register)
-				r.Post("/login", authH.Login)
+		r.Post("/login", authH.Login)
+		r.Post("/logout", authH.Logout)
 
 		r.Group(func(r chi.Router) {
 			r.Use(authMw)
