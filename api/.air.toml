@@ -1,0 +1,7 @@
+root = "."
+tmp_dir = ".air"
+[build]
+bin = "./.air/api"
+cmd = "go build -o ./.air/api ./cmd"
+include_ext = ["go"]
+exclude_dir = [".air", "bin"]
