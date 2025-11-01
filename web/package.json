@@ -9,7 +9,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
-    "@heroicons/react": "^2.2.0",
+    "@headlessui/react": "^2.2.9",
     "@tanstack/react-query": "^5.36.1",
     "axios": "^1.7.2",
     "react": "^18.3.1",
@@ -17,6 +17,8 @@
     "react-router-dom": "6"
   },
   "devDependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@iconify/json": "^2.2.402",
     "@tailwindcss/forms": "^0.5.10",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

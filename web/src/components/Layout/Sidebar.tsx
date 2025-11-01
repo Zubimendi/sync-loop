@@ -1,6 +1,12 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { CogIcon, CubeIcon, TableCellsIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import {
+  CogIcon,
+  CubeIcon,
+  TableCellsIcon,
+  ArrowRightIcon,
+} from "@heroicons/react/24/outline";
 import axios from "axios";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -29,7 +35,11 @@ export default function Sidebar() {
             to={i.href}
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition
-              ${isActive ? "bg-indigo-600/20 text-indigo-300" : "text-slate-300 hover:bg-slate-800/50"}`
+              ${
+                isActive
+                  ? "bg-indigo-600/20 text-indigo-300"
+                  : "text-slate-300 hover:bg-slate-800/50"
+              }`
             }
           >
             <i.icon className="w-5 h-5" />
@@ -38,6 +48,9 @@ export default function Sidebar() {
         ))}
       </nav>
 
+      <div className="p-4 flex items-center justify-between">
+        <ThemeToggle />
+      </div>
       <div className="p-2 border-t border-slate-800">
         <button
           onClick={handleLogout}
