@@ -37,19 +37,23 @@ func (s *Service) Register(ctx context.Context, email, password, workspaceName s
 }
 
 func (s *Service) Login(ctx context.Context, email, password string) (*model.User, *model.Workspace, string, error) {
-	u, err := s.users.GetByEmail(ctx, email)
-	if err != nil || u == nil {
-		return nil, nil, "", errors.New("invalid credentials")
-	}
-	if err := bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(password)); err != nil {
-		return nil, nil, "", errors.New("invalid credentials")
-	}
-	// TODO fetch workspace via workspace_user join
-	token, err := s.makeToken(u.ID, "TODO-workspace-id")
-	if err != nil {
-		return nil, nil, "", err
-	}
-	return u, nil, token, err
+u, err := s.users.GetByEmail(ctx, email)
+if err != nil || u == nil {
+return nil, nil, "", errors.New("invalid credentials")
+}
+if err := bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(password)); err != nil {
+return nil, nil, "", errors.New("invalid credentials")
+}
+// fetch real workspace
+w, err := s.users.GetWorkspaceByOwner(ctx, u.ID)
+if err != nil || w == nil {
+return nil, nil, "", errors.New("workspace not found")
+}
+token, err := s.makeToken(u.ID, w.ID)
+if err != nil {
+return nil, nil, "", err
+}
+return u, w, token, nil
 }
 
 func (s *Service) makeToken(userID, workspaceID string) (string, error) {

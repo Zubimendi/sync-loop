@@ -13,9 +13,12 @@ import (
 	"github.com/Zubimendi/sync-loop/api/internal/handler"
 	"github.com/Zubimendi/sync-loop/api/internal/middleware" // our package
 	"github.com/Zubimendi/sync-loop/api/internal/repo"
+	"github.com/Zubimendi/sync-loop/api/internal/connector"
+
 )
 
 func main() {
+	log.Info().Str("JWT_SECRET", os.Getenv("JWT_SECRET")).Msg("env check")
 	db, err := sqlx.Connect("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal().Err(err).Msg("db connect")
@@ -29,6 +32,10 @@ func main() {
 	userRepo := repo.NewUserRepo(db)
 	authSvc  := auth.NewService(userRepo)
 	authH    := handler.NewAuthHandler(authSvc)
+	
+	connRepo := connector.NewRepo(db)
+	connSvc  := connector.NewService(connRepo)
+	connH    := connector.NewHandler(connSvc)
 
 	r := chi.NewRouter()
 	r.Use(chiMiddleware.Logger)
@@ -42,6 +49,8 @@ func main() {
 		r.Group(func(r chi.Router) {
 			r.Use(authMw)
 			r.Get("/me", authH.Me) // we’ll add this next
+			r.Get("/connectors", connH.List)
+			r.Post("/connectors", connH.Create)
 		})
 	})
 
