@@ -13,16 +13,18 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   temporal:
-    image: temporalio/temporal:latest
-    command: >
-      server start-dev
-      --ip 0.0.0.0
-      --db-filename /data/temporal.db
+    image: temporalio/auto-setup:latest
+    depends_on:
+      - postgres
+    environment:
+      - DB=postgres12_pgx
+      - DB_PORT=5432
+      - POSTGRES_USER=syncloop
+      - POSTGRES_PWD=syncloop
+      - POSTGRES_SEEDS=postgres
     ports:
-      - "7233:7233"   # gRPC
-      - "8233:8233"   # Web UI (nice bonus)
-    volumes:
-      - temporal_data:/data
+      - "7233:7233"
+      - "8233:8233"
 
   minio:
     image: minio/minio:latest
