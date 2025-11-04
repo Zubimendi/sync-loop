@@ -2,7 +2,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "./components/Layout/Sidebar";
 import Connectors from "./pages/Connectors";
 import useAuth from "./hooks/useAuth";
-
+import Jobs from "./pages/Jobs";
+import JobDetails from "./pages/JobDetails";
 function App() {
   const { user, loading } = useAuth();
   if (loading) return <div className="p-6">Loading…</div>;
@@ -14,6 +15,8 @@ function App() {
         <Routes>
           <Route path="/connectors" element={<Connectors />} />
           <Route path="/" element={<Navigate to="/connectors" replace />} />
+          <Route path="/jobs" element={<Jobs />} />
+          <Route path="/jobs/:id" element={<JobDetails />} />
         </Routes>
       </main>
     </div>
